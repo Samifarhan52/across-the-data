@@ -13,9 +13,11 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "Admin@12345")
 WHATSAPP_NUMBER = os.getenv("WHATSAPP_NUMBER", "917676808068")
 SUPPORT_EMAIL = os.getenv("SUPPORT_EMAIL", "farhanulla.shaik@gmail.com")
 UPI_ID = os.getenv("UPI_ID", "farhanulla.shaik@upi")
-BASE_DIR = os.path.dirname(__file__)
-DATABASE = "/tmp/across_the_data.db"
-UPLOAD_FOLDER = os.path.join(BASE_DIR, "static", "demo_files")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATABASE = os.getenv("DATABASE_PATH", "/tmp/across_the_data.db")
+# Vercel serverless functions can write only to /tmp.
+# Keep demo uploads there so importing app.py does not crash on deployment.
+UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "/tmp/demo_files")
 ALLOWED_EXTENSIONS = {"xlsx", "xls", "csv", "pdf", "txt"}
 
 app = Flask(__name__)
@@ -579,4 +581,4 @@ def admin_settings():
     return admin_layout(content)
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)), debug=True)
