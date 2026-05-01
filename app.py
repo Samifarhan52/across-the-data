@@ -14,7 +14,7 @@ WHATSAPP_NUMBER = os.getenv("WHATSAPP_NUMBER", "917676808068")
 SUPPORT_EMAIL = os.getenv("SUPPORT_EMAIL", "farhanulla.shaik@gmail.com")
 UPI_ID = os.getenv("UPI_ID", "farhanulla.shaik@upi")
 BASE_DIR = os.path.dirname(__file__)
-DATABASE = os.path.join(BASE_DIR, "across_the_data.db")
+DATABASE = "/tmp/across_the_data.db"
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "static", "demo_files")
 ALLOWED_EXTENSIONS = {"xlsx", "xls", "csv", "pdf", "txt"}
 
@@ -26,7 +26,13 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # ---------------- DB ----------------
 def get_db():
     if "db" not in g:
-        g.db = sqlite3.connect(DATABASE)
+        db_path = DATABASE
+
+        # Create DB if not exists (important for Vercel)
+        if not os.path.exists(db_path):
+            init_db()
+
+        g.db = sqlite3.connect(db_path)
         g.db.row_factory = sqlite3.Row
     return g.db
 
